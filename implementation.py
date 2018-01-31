@@ -143,7 +143,7 @@ class Player:
                     continue
                 distance = abs(card - pile.top)
                 if pile.dibs and pile.dibs != self:
-                    distance += pile.dibs_amount
+                    distance += (pile.dibs_amount * 3)
 
                 plays.append((distance, card, pile))
         if not plays:
