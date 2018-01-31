@@ -84,7 +84,7 @@ class Player:
         for _ in range(required_to_play):
             if not self.hand:
                 DEBUG and print('Player %s: No cards to play' % self)
-                return
+                break
             if self.can_jump():
                 DEBUG and print(' jumping')
                 card, pile = self.can_jump()
@@ -94,7 +94,7 @@ class Player:
                 if not play:
                     self.failed_to_play = True
                     DEBUG and print('Player %s lost the game' % self)
-                    return
+                    break
                 distance, card, pile = play
                 self.play(card, pile)
 
@@ -121,6 +121,8 @@ class Player:
                 return card, pile
 
     def can_jump(self):
+        if self.is_out or self.failed_to_play:
+            return
         for card in self.hand:
             for pile in self.game.piles:
                 if card == pile.top - (10 * pile.direction):
@@ -128,6 +130,8 @@ class Player:
         return False
 
     def find_closest_card_to_play(self):
+        if self.is_out or self.failed_to_play:
+            return
         plays = []
         for card in self.hand:
             for pile in self.game.piles:
@@ -169,6 +173,7 @@ def play_game(dummy_arg=None):
         player.play_round()
 
         if game.won():
+            DEBUG and print('Game won!')
             return True
 
 
