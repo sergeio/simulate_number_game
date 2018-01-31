@@ -95,10 +95,24 @@ class Player:
                     self.failed_to_play = True
                     DEBUG and print('Player %s lost the game' % self)
                     return
-                card, pile = play
+                distance, card, pile = play
                 self.play(card, pile)
 
+        while True:
+            play = self.have_good_play()
+            if play:
+                card, pile = play
+                self.play(card, pile)
+            else:
+                break
+
         self.draw_to_full()
+
+    def have_good_play(self):
+        jump = self.can_jump()
+        if jump:
+            card, pile = jump
+            return card, pile
 
     def can_jump(self):
         for card in self.hand:
@@ -118,8 +132,7 @@ class Player:
         if not plays:
             DEBUG and print('Player %s has nothing to play: %s' % (self, self.hand))
             return
-        distance, card, pile = min(plays)
-        return card, pile
+        return min(plays)
 
     @classmethod
     def card_playable_on_pile(cls, card, pile):
