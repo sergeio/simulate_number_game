@@ -33,5 +33,10 @@ goes up to 3%.
 If you allow players to also make good plays at the ends of their turns, and
 not just jumps, the rate improves to 5%.
 
-And if you allow basic communication of calling "dibs" on a pile because you
+If you allow basic communication of calling "dibs" on a pile because you
 have something good you want to do with it, we can get up to 9%.
+
+Adding a minor dibs (as in I have a good card to play here, but it's not a full
+on jump-card) gets us to 10%.
+
+And tweaking the algorithm to penalize a player ignoring another's dibs: 12%.
