@@ -211,10 +211,4 @@ def play_game(dummy_arg=None):
             DEBUG and print('Game won!')
             return True
 
-
-    # DEBUG and print('Cards remaining: %s' % len(game.deck))
-    # DEBUG and print()
-    # for pile in game.piles:
-    #     DEBUG and print((pile, pile.cards))
-
     return False
