@@ -38,6 +38,7 @@ class Pile:
     def __init__(self, start, direction=1):
         self.cards = [start]
         self.direction = direction
+        self.dibs = None
 
     def __lt__(self, other):
         return abs(50 - self.top) < abs(50 - other.top)
@@ -138,6 +139,9 @@ class Player:
                 if not self.card_playable_on_pile(card, pile):
                     continue
                 distance = abs(card - pile.top)
+                if pile.dibs and pile.dibs != self:
+                    distance += 10
+
                 plays.append((distance, card, pile))
         if not plays:
             DEBUG and print('Player %s has nothing to play: %s' % (self, self.hand))
@@ -151,15 +155,46 @@ class Player:
 
     def play(self, card, pile):
         assert(card in self.hand)
+
+        if DEBUG:
+            if pile.dibs:
+                if pile.dibs == self:
+                    print('Player %s getting their dibs' % self)
+                else:
+                    print('Player %s __STOMPING__ dibs' % self)
+
+            for p in self.game.piles:
+                if p.dibs == self and p != pile:
+                    print(' Player %s __IGNORING__ self-dibs' % self)
+
         DEBUG and print('Player %s, playing %s on %s' % (self, card, pile))
         self.hand = [c for c in self.hand if c != card]
         pile.cards.append(card)
+
+        pile.dibs = None
+
+        for other_player in all_other_players(self.game, self):
+            other_player.maybe_call_dibs()
+
+    def maybe_call_dibs(self):
+        jump = self.can_jump()
+        if jump:
+            card, pile = jump
+            self.call_dibs(pile)
+
+    def call_dibs(self, pile):
+        DEBUG and print('Player %s calling dibs on %s' % (self, pile))
+        pile.dibs = self
 
 
 def alternate_players(game):
     while True:
         for player in game.players:
             yield player
+
+def all_other_players(game, player):
+    return [p for p in game.players if p != player]
+
 
 def play_game(dummy_arg=None):
     game = Game(players=2)
