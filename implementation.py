@@ -3,6 +3,9 @@ import random
 DEBUG = False
 
 
+MINOR_DIBS = 3
+
+
 class Game:
 
     def __init__(self, players=None):
@@ -140,7 +143,7 @@ class Player:
                     continue
                 distance = abs(card - pile.top)
                 if pile.dibs and pile.dibs != self:
-                    distance += 10
+                    distance += pile.dibs_amount
 
                 plays.append((distance, card, pile))
         if not plays:
@@ -172,6 +175,7 @@ class Player:
         pile.cards.append(card)
 
         pile.dibs = None
+        pile.dibs_amount = 0
 
         for other_player in all_other_players(self.game, self):
             other_player.maybe_call_dibs()
@@ -182,8 +186,17 @@ class Player:
             card, pile = jump
             self.call_dibs(pile)
 
-    def call_dibs(self, pile):
-        DEBUG and print('Player %s calling dibs on %s' % (self, pile))
+        play = self.find_closest_card_to_play()
+        if play:
+            distance, card, pile = play
+            if distance < MINOR_DIBS:
+                self.call_dibs(pile, minor=True)
+
+
+    def call_dibs(self, pile, minor=False):
+        pile.dibs_amount = MINOR_DIBS if minor else 10
+        DEBUG and print(
+            'Player %s calling %s dibs on %s' % (self, pile.dibs_amount, pile))
         pile.dibs = self
 
 
