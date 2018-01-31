@@ -114,6 +114,12 @@ class Player:
             card, pile = jump
             return card, pile
 
+        play = self.find_closest_card_to_play()
+        if play:
+            distance, card, pile = play
+            if distance < 4:
+                return card, pile
+
     def can_jump(self):
         for card in self.hand:
             for pile in self.game.piles:
